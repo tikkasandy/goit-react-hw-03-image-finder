@@ -1,27 +1,27 @@
 import { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import Searchbar from './components/Searchbar';
+import ImageGallery from './components/ImageGallery';
 
 class App extends Component {
-  state = {};
+  state = {
+    searchQuery: '',
+  };
 
-  componentDidMount() {
-    // const contacts = localStorage.getItem('contacts');
-    // const parsedContacts = JSON.parse(contacts);
-    // if (parsedContacts) {
-    //   this.setState({ contacts: parsedContacts });
-    // }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // const nextContacts = this.state.contacts;
-    // const prevContacts = prevState.contacts;
-    // if (nextContacts !== prevContacts) {
-    //   console.log('Обновилось поле todos, записываю contacts в хранилище');
-    //   localStorage.setItem('contacts', JSON.stringify(nextContacts));
-    // }
-  }
+  handleFormSubmit = searchQuery => {
+    this.setState({ searchQuery });
+  };
 
   render() {
-    return <></>;
+    return (
+      <>
+        <Searchbar onSubmit={this.handleFormSubmit} />
+        <ImageGallery searchQuery={this.state.searchQuery} />
+        <ToastContainer />
+      </>
+    );
   }
 }
 
