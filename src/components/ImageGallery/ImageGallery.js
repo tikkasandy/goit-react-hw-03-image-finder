@@ -28,19 +28,22 @@ class ImageGallery extends Component {
     const nextPage = this.state.page;
 
     if (prevQuery !== nextQuery || prevPage !== nextPage) {
-      // this.setState({ status: 'pending' });
+      this.setState({ status: 'pending' });
       if (prevQuery !== nextQuery) {
         this.reset();
       }
 
       imagesAPI
         .fetchImages(nextQuery, nextPage)
-        .then(images =>
-          this.setState(prevState => ({
-            images: [...prevState.images, ...images.hits],
-            status: 'resolved',
-          })),
-        )
+        .then(images => {
+          console.log(images);
+          if (images.hits.length > 0) {
+            this.setState(prevState => ({
+              images: [...prevState.images, ...images.hits],
+              status: 'resolved',
+            }));
+          }
+        })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
