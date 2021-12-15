@@ -12,6 +12,7 @@ class ImageGallery extends Component {
   static propTypes = {
     searchQuery: PropTypes.string.isRequired,
   };
+
   state = {
     images: [],
     page: 1,
@@ -29,8 +30,10 @@ class ImageGallery extends Component {
 
     if (prevQuery !== nextQuery || prevPage !== nextPage) {
       this.setState({ status: 'pending' });
-      if (prevQuery !== nextQuery) {
+      if (prevQuery !== nextQuery && prevPage !== 1) {
         this.reset();
+        console.log('reset');
+        return;
       }
 
       imagesAPI
@@ -73,6 +76,8 @@ class ImageGallery extends Component {
   };
 
   render() {
+    console.log(this.state);
+    console.log(this.props);
     const { images, showModal, modalImage, status, error } = this.state;
     const { largeImage, alt } = modalImage;
     return (
