@@ -26,7 +26,6 @@ class Searchbar extends Component {
     }
 
     this.props.onSubmit(this.state.searchQuery);
-    // this.reset();
   };
 
   reset = () => {
@@ -37,12 +36,12 @@ class Searchbar extends Component {
     return (
       <header className={s.Searchbar}>
         <form className={s.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={s.SearchFormButton}>
-            <ImSearch className={s.SearchFormButtonSvg} />
+          <button type="submit" className={s.Button} arial-label="Search">
+            <ImSearch className={s.ButtonSvg} />
           </button>
 
           <input
-            className={s.SearchFormInput}
+            className={s.Input}
             type="text"
             name="searchQuery"
             value={this.state.searchQuery}

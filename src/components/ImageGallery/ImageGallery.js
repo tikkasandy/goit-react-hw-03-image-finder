@@ -19,7 +19,6 @@ class ImageGallery extends Component {
     showModal: false,
     modalImage: {},
     status: 'idle',
-    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -28,26 +27,39 @@ class ImageGallery extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
-    if (prevQuery !== nextQuery || prevPage !== nextPage) {
-      this.setState({ status: 'pending' });
-      if (prevQuery !== nextQuery && prevPage !== 1) {
-        this.reset();
-        console.log('reset');
+    if (prevQuery !== nextQuery) {
+      this.reset();
+
+      if (prevPage > 1) {
         return;
       }
+    }
+
+    if (prevQuery !== nextQuery || prevPage !== nextPage) {
+      this.setState({ status: 'pending' });
 
       imagesAPI
         .fetchImages(nextQuery, nextPage)
         .then(images => {
-          console.log(images);
           if (images.hits.length > 0) {
             this.setState(prevState => ({
               images: [...prevState.images, ...images.hits],
               status: 'resolved',
             }));
+          } else {
+            if (nextPage > 1) {
+              return Promise.reject(new Error(`Show all images on you query.`));
+            } else {
+              return Promise.reject(
+                new Error(`Images not found. Please enter a correct query.`),
+              );
+            }
           }
         })
-        .catch(error => this.setState({ error, status: 'rejected' }));
+        .catch(error => {
+          this.setState({ status: 'rejected' });
+          toast.error(error.message);
+        });
     }
   }
 
@@ -76,14 +88,10 @@ class ImageGallery extends Component {
   };
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
-    const { images, showModal, modalImage, status, error } = this.state;
+    const { images, showModal, modalImage, status } = this.state;
     const { largeImage, alt } = modalImage;
     return (
       <>
-        {status === 'idle' && <></>}
-        {status === 'rejected' && <strong>{error.message}</strong>}
         {images.length > 0 && (
           <ul className={s.ImageGallery}>
             {images.map(({ id, largeImageURL, webformatURL, tags }) => (
@@ -100,8 +108,8 @@ class ImageGallery extends Component {
         {showModal && (
           <Modal onClose={this.toggleModal} url={largeImage} alt={alt} />
         )}
-        {status === 'pending' && <CustomLoader />}
         {status === 'resolved' && <Button onClick={this.changePage} />}
+        {status === 'pending' && <CustomLoader />}
       </>
     );
   }

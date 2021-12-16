@@ -12,11 +12,7 @@ function fetchImages(searchQuery, page) {
       return response.json();
     }
 
-    return Promise.reject(
-      new Error(
-        `Images not found. Please enter a correct query ${searchQuery}`,
-      ),
-    );
+    return Promise.reject(new Error('Ooops. Something went wrong (('));
   });
 }
 
